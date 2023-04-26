@@ -48,16 +48,79 @@ void gerarTabuleiro(char tabuleiro[8][8]) {
     tabuleiro[linha][coluna] = 'F';
 }
 
+void moverAgente(char tabuleiro[8][8], int* linha_agente, int* coluna_agente, char direcao) {
+    int nova_linha = *linha_agente;
+    int nova_coluna = *coluna_agente;
+    // Verifica a direção solicitada e atualiza a posição do agente:
+    switch (direcao) {
+        case 'c': // cima
+            nova_linha--;
+            break;
+        case 'b': // baixo
+            nova_linha++;
+            break;
+        case 'e': // esquerda
+            nova_coluna--;
+            break;
+        case 'd': // direita
+            nova_coluna++;
+            break;
+        default:
+            printf("Direção inválida!\n");
+            return;
+    }
+    // Verifica se a nova posição é válida:
+    if (nova_linha < 0 || nova_linha >= 8 || nova_coluna < 0 || nova_coluna >= 8) {
+        printf("Movimento inválido! O agente não pode sair do tabuleiro.\n");
+        return;
+    }
+    char destino = tabuleiro[nova_linha][nova_coluna];
+    // Verifica se o destino é uma posição válida (vazia, ou contém ouro, flecha ou poço):
+    if (destino == 'O' || destino == 'F' || destino == 'P' || destino == '.') {
+        // Move o agente para o destino:
+        tabuleiro[*linha_agente][*coluna_agente] = '.'; // apaga a posição atual
+        tabuleiro[nova_linha][nova_coluna] = 'A'; // atualiza a posição do agente
+        *linha_agente = nova_linha; // atualiza a posição do agente na variável externa
+        *coluna_agente = nova_coluna;
+    } else if (destino == 'M') { // Monstro
+        printf("O agente encontrou um monstro! Fim de jogo.\n");
+        exit(0);
+    } else { // Caso contrário (destino é um caractere inválido)
+        printf("Movimento inválido! O agente não pode ir para essa posição.\n");
+    }
+}
+
 int main() {
     char tabuleiro[8][8];
     gerarTabuleiro(tabuleiro);
+    int linha_agente, coluna_agente;
+    // Encontra a posição inicial do agente:
     int i, j;
     for (i = 0; i < 8; i++) {
         for (j = 0; j < 8; j++) {
-            printf("%c ", tabuleiro[i][j]);
+            if (tabuleiro[i][j] == 'A') {
+                linha_agente = i;
+                coluna_agente = j;
+                break;
+            }
         }
-        printf("\n");
+    }
+    // Loop principal:
+    char direcao;
+    while (1) {
+        // Imprime o tabuleiro atual:
+        printf("\nTabuleiro atual:\n");
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+                printf("%c ", tabuleiro[i][j]);
+            }
+            printf("\n");
+        }
+        // Pede ao usuário a direção desejada:
+        printf("Digite a direção desejada (c, b, e ou d): ");
+        scanf(" %c", &direcao);
+        // Move o agente para a nova posição:
+        moverAgente(tabuleiro, &linha_agente, &coluna_agente, direcao);
     }
     return 0;
 }
-
