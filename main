@@ -1,0 +1,138 @@
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+
+using namespace std;
+
+const int SIZE = 8;
+const char AGENT = 'A';
+const char GOLD = 'G';
+const char PIT = 'P';
+const char MONSTER = 'M';
+const char ARROW = 'F';
+const char HIDDEN = '?';
+
+void clearScreen() {
+    // Função para limpar a tela do console
+    cout << "\033[2J\033[1;1H";
+}
+
+void printBoard(char board[][SIZE]) {
+    // Função para imprimir o tabuleiro
+    cout << " ";
+    for (int j = 0; j < SIZE; j++) {
+        cout << " " << (char)('1' + j);
+    }
+    cout << endl;
+    for (int i = 0; i < SIZE; i++) {
+        cout << (char)('A' + i) << " ";
+        for (int j = 0; j < SIZE; j++) {
+            cout << board[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+bool isOccupied(char board[][SIZE], int row, int col) {
+    // Função para verificar se uma posição está ocupada
+    return board[row][col] != HIDDEN;
+}
+
+bool isValidPosition(char board[][SIZE], int row, int col) {
+    // Função para verificar se uma posição é válida (dentro dos limites do tabuleiro)
+    return row >= 0 && row < SIZE && col >= 0 && col < SIZE && !isOccupied(board, row, col);
+}
+
+void addElement(char board[][SIZE], char element) {
+    // Função para adicionar um elemento (ouro, poço, monstro ou flecha) em uma posição aleatória
+    int row, col;
+    do {
+        row = rand() % SIZE;
+        col = rand() % SIZE;
+    } while (!isValidPosition(board, row, col));
+    board[row][col] = element;
+}
+
+void generateBoard(char board[][SIZE]) {
+    // Função para gerar o tabuleiro com os elementos
+    srand(time(NULL));
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            board[i][j] = HIDDEN;
+        }
+    }
+    board[0][0] = AGENT;
+    addElement(board, GOLD);
+    for (int i = 0; i < 5; i++) {
+        addElement(board, PIT);
+    }
+    addElement(board, MONSTER);
+    addElement(board, ARROW);
+}
+
+bool isValidMove(int currentRow, int currentCol, int newRow, int newCol) {
+    // Função para verificar se um movimento é válido (horizontal ou vertical, e de no máximo 1 casa de distância)
+    return (currentRow == newRow && abs(currentCol - newCol) == 1) ||
+           (currentCol == newCol && abs(currentRow - newRow) == 1);
+}
+
+void moveAgent(char board[][SIZE], int& agentRow, int& agentCol) {
+    // Função para mover o agente
+    string input;
+    int newRow, newCol;
+    do {
+        cout << "Digite a posição de destino (ex.: A2): ";
+        cin >> input;
+        newRow = input[0] - 'A';
+        newCol = input[1] - '1';
+    } while (!isValidPosition(board, newRow, newCol) || !isValidMove(agentRow, agentCol, newRow, newCol));
+    board[agentRow][agentCol] = HIDDEN;
+    agentRow = newRow;
+    agentCol = newCol;
+    board[agentRow][agentCol] = AGENT;
+}
+
+void playGame() {
+    // Função para jogar o jogo
+    char board[SIZE][SIZE];
+    generateBoard(board);
+    int arrowCount = 1;
+    bool hasGold = false;
+    int agentRow = 0, agentCol = 0;
+    clearScreen();
+    cout << "Bem-vindo ao jogo do agente minerador!\n";
+    while (true) {
+        printBoard(board);
+        if (hasGold) {
+            cout << "Parabéns, você encontrou o ouro! Agora volte para a posição (A,1) para escapar com o tesouro.\n";
+        }
+        if (board[agentRow][agentCol] == PIT) {
+            cout << "O agente caiu em um poço e morreu! Fim de jogo.\n";
+            return;
+        }
+    }
+}
+int main(){
+    
+  int op;
+      
+  printf("Escolha uma opção:");
+  printf("\n1.Jogar");
+  printf("\n2.Sair");
+  scanf("%d", &op);
+      
+  switch (op) {
+    case 1:
+    // inicia o jogo
+    playGame();
+  break;
+    case 2:
+    // encerra o programa
+  break;
+    default:
+    printf("Erro!");
+  break;
+            }
+        
+      return 0;
+    }
