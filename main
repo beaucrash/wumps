@@ -1,97 +1,63 @@
-#include <iostream>
-#include <ctime>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-using namespace std;
-
-void gerarTabuleiro(char tabuleiro[][8]){
-   for(int i=0; i<8; i++){
-      for(int j=0; j<8; j++){
-         tabuleiro[i][j] = '0';
-      }
-   }
+void gerarTabuleiro(char tabuleiro[8][8]) {
+    int i, j;
+    // Preenche o tabuleiro com pontos (.):
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            tabuleiro[i][j] = '.';
+        }
+    }
+    // Define a posição do agente (A), do ouro (O), do monstro (M),
+    // dos poços (P) e da flecha (F):
+    srand(time(NULL)); // inicializa o gerador de números aleatórios
+    int linha, coluna;
+    // Agente (A):
+    linha = rand() % 8;
+    coluna = rand() % 8;
+    tabuleiro[linha][coluna] = 'A';
+    // Ouro (O):
+    do {
+        linha = rand() % 8;
+        coluna = rand() % 8;
+    } while (tabuleiro[linha][coluna] != '.');
+    tabuleiro[linha][coluna] = 'O';
+    // Monstro (M):
+    do {
+        linha = rand() % 8;
+        coluna = rand() % 8;
+    } while (tabuleiro[linha][coluna] != '.');
+    tabuleiro[linha][coluna] = 'M';
+    // Poços (P):
+    int num_pocos = 0;
+    while (num_pocos < 5) {
+        linha = rand() % 8;
+        coluna = rand() % 8;
+        if (tabuleiro[linha][coluna] == '.') {
+            tabuleiro[linha][coluna] = 'P';
+            num_pocos++;
+        }
+    }
+    // Flecha (F):
+    do {
+        linha = rand() % 8;
+        coluna = rand() % 8;
+    } while (tabuleiro[linha][coluna] != '.');
+    tabuleiro[linha][coluna] = 'F';
 }
 
-void imprimirTabuleiro(char tabuleiro[][8]){
-   for(int i=0; i<8; i++){
-      for(int j=0; j<8; j++){
-         cout << tabuleiro[i][j] << " ";
-      }
-      cout << endl;
-   }
-}
-
-void inserirAgente(char tabuleiro[][8]){
-   int linha, coluna;
-   srand(time(0));
-   linha = rand() % 8;
-   coluna = rand() % 8;
-   tabuleiro[linha][coluna] = 'A';
-}
-
-void inserirPocos(char tabuleiro[][8]){
-   int linha, coluna;
-   srand(time(0));
-   for(int i=0; i<5; i++){
-      linha = rand() % 8;
-      coluna = rand() % 8;
-      tabuleiro[linha][coluna] = 'P';
-   }
-}
-
-void moverAgente(char tabuleiro[][8]){
-   char direcao;
-   int linhaAgente, colunaAgente;
-   
-   // Encontra a posição do agente no tabuleiro
-   for(int i=0; i<8; i++){
-      for(int j=0; j<8; j++){
-         if(tabuleiro[i][j] == 'A'){
-            linhaAgente = i;
-            colunaAgente = j;
-            break;
-         }
-      }
-   }
-   
-   cout << "\nMover agente: acima (c), abaixo (b), esquerda (e), direita (d)...";
-   cin >> direcao;
-   
-   // Movimenta o agente para cima
-   if(direcao == 'c' && linhaAgente > 0){
-      tabuleiro[linhaAgente][colunaAgente] = '0'; // Remove o agente da posição atual
-      tabuleiro[linhaAgente-1][colunaAgente] = 'A'; // Insere o agente na nova posição
-   } else if{
-    // Movimenta o agente para baixo
-   if(direcao == 'b' && linhaAgente > 0){
-      tabuleiro[linhaAgente][colunaAgente] = '0'; // Remove o agente da posição atual
-      tabuleiro[linhaAgente-1][colunaAgente] = 'A'; // Insere o agente na nova posição
-   } else if{
-    // Movimenta o agente para baixo
-   if(direcao == 'e' && linhaAgente > 0){
-      tabuleiro[linhaAgente][colunaAgente] = '0'; // Remove o agente da posição atual
-      tabuleiro[linhaAgente-1][colunaAgente] = 'A'; // Insere o agente na nova posição
-    } else if{
-    // Movimenta o agente para baixo
-   if(direcao == 'd' && linhaAgente > 0){
-      tabuleiro[linhaAgente][colunaAgente] = '0'; // Remove o agente da posição atual
-      tabuleiro[linhaAgente-1][colunaAgente] = 'A'; // Insere o agente na nova posição
-   } else {
-      cout << "Movimento invalido!" << endl;
-   }
-}
-
-int main(){
-   int op;
-   char tabuleiro[8][8];
-
-         gerarTabuleiro(tabuleiro);
-         inserirAgente(tabuleiro);
-         inserirPocos(tabuleiro);
-         while(true){
-         imprimirTabuleiro(tabuleiro);
-         moverAgente(tabuleiro);
-         }
-  return 0;
+int main() {
+    char tabuleiro[8][8];
+    gerarTabuleiro(tabuleiro);
+    int i, j;
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            printf("%c ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+    return 0;
 }
 
