@@ -51,7 +51,6 @@ void gerarTabuleiro(char tabuleiro[8][8]) {
 void moverAgente(char tabuleiro[8][8], int* linha_agente, int* coluna_agente, char direcao) {
     int nova_linha = *linha_agente;
     int nova_coluna = *coluna_agente;
-    // Verifica a direção solicitada e atualiza a posição do agente:
     switch (direcao) {
         case 'c': // cima
             nova_linha--;
@@ -94,7 +93,6 @@ int main() {
     char tabuleiro[8][8];
     gerarTabuleiro(tabuleiro);
     int linha_agente, coluna_agente;
-    // Encontra a posição inicial do agente:
     int i, j;
     for (i = 0; i < 8; i++) {
         for (j = 0; j < 8; j++) {
@@ -105,10 +103,8 @@ int main() {
             }
         }
     }
-    // Loop principal:
     char direcao;
     while (1) {
-        // Imprime o tabuleiro atual:
         system("cls");
         printf("\nTabuleiro atual:\n");
         for (i = 0; i < 8; i++) {
@@ -117,10 +113,8 @@ int main() {
             }
             printf("\n");
         }
-        // Pede ao usuário a direção desejada:
         printf("Digite a direção desejada (c, b, e ou d): ");
         scanf(" %c", &direcao);
-        // Move o agente para a nova posição:
         moverAgente(tabuleiro, &linha_agente, &coluna_agente, direcao);
     }
     return 0;
